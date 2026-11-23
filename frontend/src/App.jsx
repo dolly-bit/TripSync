@@ -3,6 +3,7 @@ import { ArrowDown, ArrowRight, ArrowUpRight, CalendarDays, Check, ChevronDown, 
 import Features from "./Features.jsx"
 import HowItWorks from "./HowItWorks.jsx"
 import Stories from "./Stories.jsx"
+import Auth from "./Auth.jsx"
 
 const stops = [
   { time: "09:30", title: "Coffee at The Barn", place: "Ubud, Bali", color: "mint" },
@@ -65,6 +66,8 @@ const pageRoutes = {
   "/how-it-works": { component: HowItWorks, title: "How TripSync Works — Plan Together, Travel Better", description: "See how TripSync brings your people, itinerary, and shared expenses together in three easy steps." },
   "/features": { component: Features, title: "TripSync Features — Everything Your Group Trip Needs", description: "Explore shared itineraries, saved places, group expenses, and trip coordination tools from TripSync." },
   "/stories": { component: Stories, title: "TripSync Stories — The Best Part Is Being There", description: "Find inspiration for your next group getaway and see how a little planning makes room for the good stuff." },
+  "/login": { component: () => <Auth initialMode="login" />, title: "Log in — TripSync", description: "Log in to your TripSync account and pick up where your next adventure begins." },
+  "/signup": { component: () => <Auth initialMode="signup" />, title: "Sign up — TripSync", description: "Create a TripSync account and start planning your next group adventure." },
 }
 
 function App() {
@@ -92,14 +95,14 @@ function App() {
           <nav className="main-nav" aria-label="Main navigation">
             <a href="/how-it-works">How it works</a><a href="/features">Features</a><a href="/stories">Stories</a>
           </nav>
-          <div className="header-actions"><a className="sign-in" href="#get-started">Log in</a><a className="button button-small button-outline" href="#get-started">Get started <ArrowUpRight size={14} /></a></div>
+          <div className="header-actions"><a className="sign-in" href="/login">Log in</a><a className="button button-small button-outline" href="/signup">Get started <ArrowUpRight size={14} /></a></div>
         </header>
         <div className="hero-content">
           <div className="hero-copy">
             <div className="hero-kicker"><span className="kicker-stars"><Sparkles size={13} /></span> THE WORLD, BETTER TOGETHER</div>
             <h1>Good trips.<br /><span className="headline-soft">No group chat</span><br /><span className="headline-accent">required.</span></h1>
             <p className="hero-description">Every plan, place, and split — all in sync. Spend less time figuring it out and more time out there.</p>
-            <div className="hero-actions"><a href="#get-started" className="button button-primary">Plan your first trip <ArrowRight size={16} /></a><a href="/how-it-works" className="button button-quiet">See how it works <span className="play-icon">▶</span></a></div>
+            <div className="hero-actions"><a href="/signup" className="button button-primary">Plan your first trip <ArrowRight size={16} /></a><a href="/how-it-works" className="button button-quiet">See how it works <span className="play-icon">▶</span></a></div>
             <div className="social-proof"><AvatarStack /><div><div className="rating">★★★★★ <span>4.9/5</span></div><p>Made for the trips you&apos;ll talk about forever</p></div></div>
           </div>
           <div className="hero-visual"><div className="visual-orbit orbit-one" /><div className="visual-orbit orbit-two" /><div className="orbit-dot dot-one" /><div className="orbit-dot dot-two" /><TripCard /><div className="floating-note note-top"><span className="note-icon"><Check size={13} /></span><span><strong>Everyone&apos;s in</strong><small>Trip plans are in sync</small></span></div><div className="floating-note note-bottom"><span className="note-icon note-icon-pink"><WalletCards size={14} /></span><span><strong>Split, then forget it</strong><small>All expenses, accounted for</small></span></div></div>

@@ -17,8 +17,8 @@ export function SiteHeader() {
         {navItems.map((item) => <a href={item.href} key={item.href}>{item.label}</a>)}
       </nav>
       <div className="header-actions">
-        <a className="sign-in" href="/#get-started">Log in</a>
-        <a className="button button-small button-outline" href="/#get-started">Get started <ArrowUpRight size={14} /></a>
+        <a className="sign-in" href="/login">Log in</a>
+        <a className="button button-small button-outline" href="/signup">Get started <ArrowUpRight size={14} /></a>
       </div>
     </header>
   )
