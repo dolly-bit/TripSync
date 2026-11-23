@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
 import {
   ArrowRight, ArrowUpRight, Bell, CalendarDays, Check, ChevronDown, ChevronLeft,
