@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
 import {
   ArrowRight, ArrowUpRight, Bell, CalendarDays, Check, ChevronDown, ChevronLeft,
   ChevronRight, CircleHelp, Compass, CreditCard, FileText, Globe2, Heart, LayoutDashboard,
@@ -44,6 +44,36 @@ function Brand({ light = false }) {
   return <a className={cx('brand', light && 'brand-light')} href="#" aria-label="TripSync home"><span className="brand-mark"><Plane size={18} /></span><span>trip<span>sync</span><small>GO FURTHER, TOGETHER</small></span></a>
 }
 
+function ScrollJourney() {
+  const target = useRef(null)
+  const { scrollYProgress } = useScroll({ target, offset: ['start start', 'end end'] })
+  const imageScale = useTransform(scrollYProgress, [0, .5, 1], [1.12, 1, 1.18])
+  const imageX = useTransform(scrollYProgress, [0, .5, 1], ['0%', '-4%', '2%'])
+  const firstOpacity = useTransform(scrollYProgress, [0, .22, .38], [1, 1, 0])
+  const secondOpacity = useTransform(scrollYProgress, [.28, .48, .68], [0, 1, 0])
+  const thirdOpacity = useTransform(scrollYProgress, [.6, .78, 1], [0, 1, 1])
+  const titleY = useTransform(scrollYProgress, [0, .3, .65, 1], ['0%', '-20%', '-42%', '-65%'])
+  const progressWidth = useTransform(scrollYProgress, v => (v * 100) + '%')
+  return <section className="scroll-journey" ref={target} id="journey">
+    <div className="scroll-journey-sticky">
+      <motion.div className="scroll-journey-image" style={{ scale:imageScale, x:imageX }}>
+        <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=2400&q=90" alt="Towering mountains above the clouds"/>
+      </motion.div>
+      <div className="scroll-journey-overlay"/>
+      <div className="scroll-journey-top"><span>TRIPSYNC JOURNAL</span><span>01 — 03</span></div>
+      <motion.div className="scroll-journey-copy" style={{ y:titleY }}>
+        <motion.article style={{ opacity:firstOpacity }}><span>01 / FIND YOUR ELSEWHERE</span><h2>Leave the<br/><em>ordinary</em><br/>behind.</h2><p>There is a whole world waiting beyond your usual route.</p></motion.article>
+        <motion.article style={{ opacity:secondOpacity }}><span>02 / BRING YOUR PEOPLE</span><h2>Better places.<br/><em>Better</em><br/>together.</h2><p>Turn “we should go” into a plan everyone can shape.</p></motion.article>
+        <motion.article style={{ opacity:thirdOpacity }}><span>03 / MAKE IT YOURS</span><h2>Collect moments.<br/><em>Not</em> checklists.</h2><p>Keep the details in sync, then get out there and live it.</p></motion.article>
+      </motion.div>
+      <div className="scroll-journey-bottom"><span>KEEP SCROLLING</span><div className="journey-progress"><motion.i style={{ width:progressWidth }}/></div><span>THE WORLD IS YOURS</span></div>
+      <motion.div className="journey-number" style={{ opacity:firstOpacity }}>01</motion.div>
+      <motion.div className="journey-number" style={{ opacity:secondOpacity }}>02</motion.div>
+      <motion.div className="journey-number" style={{ opacity:thirdOpacity }}>03</motion.div>
+    </div>
+  </section>
+}
+
 function Landing({ onAuth }) {
   const [query, setQuery] = useState('')
   const [menu, setMenu] = useState(false)
@@ -52,81 +82,48 @@ function Landing({ onAuth }) {
     <header className="site-nav wrap">
       <Brand light />
       <nav className={menu ? 'nav-links nav-open' : 'nav-links'}>
-        <a href="#destinations" onClick={() => setMenu(false)}>Destinations</a><a href="#how" onClick={() => setMenu(false)}>The experience</a><a href="#features" onClick={() => setMenu(false)}>Why TripSync</a>
+        <a href="#destinations" onClick={() => setMenu(false)}>Destinations</a><a href="#journey" onClick={() => setMenu(false)}>The journey</a><a href="#features" onClick={() => setMenu(false)}>Why TripSync</a>
       </nav>
       <div className="nav-actions"><button className="nav-login" onClick={() => onAuth('login')}>Log in</button><button className="btn btn-mint btn-small" onClick={() => onAuth('register')}>Create your trip <ArrowUpRight size={15}/></button></div>
       <button className="mobile-menu" onClick={() => setMenu(!menu)} aria-label="Toggle menu"><Menu /></button>
     </header>
-
     <main>
       <section className="hero cinematic-hero">
         <div className="cinema-backdrop">
-          <div className="cinema-image cinema-image-back"/>
-          <div className="cinema-image cinema-image-front"/>
-          <div className="cinema-vignette"/>
-          <motion.div className="cinema-sun" animate={{ y:[0,-13,0], scale:[1,1.05,1] }} transition={{ duration:8, repeat:Infinity, ease:'easeInOut' }}/>
-          <motion.div className="cinema-cloud cloud-one" animate={{ x:[-12,22,-12] }} transition={{ duration:24, repeat:Infinity, ease:'easeInOut' }}/>
-          <motion.div className="cinema-cloud cloud-two" animate={{ x:[18,-18,18] }} transition={{ duration:31, repeat:Infinity, ease:'easeInOut' }}/>
-          <motion.div className="flight-path" initial={{ pathLength:0, opacity:0 }} animate={{ pathLength:1, opacity:.75 }} transition={{ duration:2.2, delay:1 }}/>
-          <motion.div className="floating-plane" animate={{ x:[0,18,0], y:[0,-9,0], rotate:[-8,-3,-8] }} transition={{ duration:7, repeat:Infinity, ease:'easeInOut' }}><Plane size={27}/></motion.div>
+          <div className="cinema-image cinema-image-back"/><div className="cinema-image cinema-image-front"/><div className="cinema-vignette"/>
+          <motion.div className="cinema-sun" animate={{ y:[0,-22,0], scale:[1,1.08,1] }} transition={{ duration:7, repeat:Infinity, ease:'easeInOut' }}/>
+          <motion.div className="cinema-cloud cloud-one" animate={{ x:[-45,50,-45] }} transition={{ duration:18, repeat:Infinity, ease:'easeInOut' }}/>
+          <motion.div className="cinema-cloud cloud-two" animate={{ x:[35,-40,35] }} transition={{ duration:23, repeat:Infinity, ease:'easeInOut' }}/>
+          <motion.div className="floating-plane" animate={{ x:[-30,55,-30], y:[0,-24,0], rotate:[-8,3,-8] }} transition={{ duration:11, repeat:Infinity, ease:'easeInOut' }}><Plane size={30}/></motion.div>
+          <motion.div className="hero-orbit orbit-a" animate={{ rotate:360 }} transition={{ duration:48, repeat:Infinity, ease:'linear' }}/>
+          <motion.div className="hero-orbit orbit-b" animate={{ rotate:-360 }} transition={{ duration:65, repeat:Infinity, ease:'linear' }}/>
         </div>
         <div className="hero-copy cinematic-copy">
-          <motion.div className="eyebrow" initial={{ opacity:0, y:18 }} animate={{ opacity:1, y:0 }} transition={{ duration:.7, delay:.2 }}><span className="eyebrow-dot"/> FOR THE PLACES THAT STAY WITH YOU</motion.div>
-          <h1>{titleWords.map((word,i)=><motion.span className={i===2?'headline-accent':''} key={word} initial={{ opacity:0, y:65, rotateX:-25 }} animate={{ opacity:1, y:0, rotateX:0 }} transition={{ duration:.85, delay:.35+i*.17, ease:[.2,.8,.2,1] }}>{word}{i!==2?' ':''}</motion.span>)}</h1>
-          <motion.p className="hero-lead" initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:.7, delay:1 }}>The best journeys aren't planned alone. Bring your people, shape the adventure and keep every little detail in sync.</motion.p>
-          <motion.div className="hero-search" initial={{ opacity:0, y:22 }} animate={{ opacity:1, y:0 }} transition={{ duration:.7, delay:1.15 }}>
-            <div className="search-field"><MapPin size={17}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Where should we go?"/></div>
-            <button className="btn btn-mint" onClick={() => onAuth('register')}>Start exploring <ArrowRight size={16}/></button>
-          </motion.div>
-          <motion.div className="hero-trust" initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:1.5 }}><div className="avatar-stack"><i>J</i><i>M</i><i>A</i><i>+</i></div><span><b>One trip. Your whole crew.</b><small>Less planning chaos. More stories.</small></span></motion.div>
+          <motion.div className="eyebrow" initial={{ opacity:0, y:25 }} animate={{ opacity:1, y:0 }} transition={{ duration:.8 }}><span className="eyebrow-dot"/> FOR THE PLACES THAT STAY WITH YOU</motion.div>
+          <h1>{titleWords.map((word,i)=><motion.span className={i===2?'headline-accent':''} key={word} initial={{ opacity:0, y:100, rotateX:-50, filter:'blur(12px)' }} animate={{ opacity:1, y:0, rotateX:0, filter:'blur(0px)' }} transition={{ duration:1.15, delay:.25+i*.22, ease:[.16,1,.3,1] }}>{word}{i!==2?' ':''}</motion.span>)}</h1>
+          <motion.p className="hero-lead" initial={{ opacity:0, y:25 }} animate={{ opacity:1, y:0 }} transition={{ duration:.8, delay:1 }}>The best journeys aren't planned alone. Bring your people, shape the adventure and keep every little detail in sync.</motion.p>
+          <motion.div className="hero-search" initial={{ opacity:0, y:30, scale:.96 }} animate={{ opacity:1, y:0, scale:1 }} transition={{ duration:.8, delay:1.2 }}><div className="search-field"><MapPin size={17}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Where should we go?"/></div><button className="btn btn-mint" onClick={() => onAuth('register')}>Start exploring <ArrowRight size={16}/></button></motion.div>
+          <motion.div className="hero-trust" initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:1.6 }}><div className="avatar-stack"><i>J</i><i>M</i><i>A</i><i>+</i></div><span><b>One trip. Your whole crew.</b><small>Less planning chaos. More stories.</small></span></motion.div>
         </div>
-        <motion.div className="scene-coordinate" initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:1.7 }}>27° 10' N &nbsp; 78° 02' E <span>— SOMEWHERE WORTH GOING</span></motion.div>
-        <motion.a className="scroll-cue" href="#journey" initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:2 }}><span>SCROLL TO WANDER</span><motion.i animate={{ y:[0,9,0] }} transition={{ duration:1.5, repeat:Infinity }}>↓</motion.i></motion.a>
+        <div className="scene-coordinate">27° 10' N &nbsp; 78° 02' E <span>— SOMEWHERE WORTH GOING</span></div>
+        <a className="scroll-cue" href="#journey"><span>SCROLL TO WANDER</span><motion.i animate={{ y:[0,12,0] }} transition={{ duration:1, repeat:Infinity }}>↓</motion.i></a>
         <div className="hero-side-label">MADE FOR THE JOURNEY <span>↗</span></div>
       </section>
-
-      <section className="journey-scene" id="journey">
-        <div className="journey-art">
-          <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=2000&q=90" alt="Mountain lake at golden hour"/>
-          <div className="journey-art-shade"/>
-          <motion.div className="journey-sticker" initial={{ opacity:0, rotate:-12, scale:.7 }} whileInView={{ opacity:1, rotate:5, scale:1 }} viewport={{ once:true }} transition={{ duration:.8 }}>GO<br/>WHERE<br/><em>YOU FEEL.</em></motion.div>
-        </div>
-        <div className="journey-copy">
-          <motion.span className="eyebrow" initial={{ opacity:0, y:15 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}>NOT JUST ANOTHER TRIP PLANNER</motion.span>
-          <motion.h2 initial={{ opacity:0, y:35 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:.7 }}>Make room for<br/><em>the unexpected.</em></motion.h2>
-          <motion.p initial={{ opacity:0, y:25 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:.12 }}>The late-night detours. The tiny cafés. The stories that start with “remember when?”. TripSync keeps the planning together, so you can be there for the moments.</motion.p>
-          <motion.a href="#features" className="journey-link" whileHover={{ x:7 }}>A better way to travel <ArrowUpRight size={17}/></motion.a>
-        </div>
-      </section>
-
+      <ScrollJourney/>
       <section className="feature-strip wrap" id="features">
         <div className="strip-intro"><span className="eyebrow">THE WHOLE JOURNEY</span><h2>All the moving parts.<br/><em>Finally in one place.</em></h2></div>
         <div className="strip-feature"><span><Users/></span><b>Better together</b><small>Invite your crew and make decisions as a team.</small></div>
         <div className="strip-feature"><span><ListTodo/></span><b>Plans that flow</b><small>Build day-by-day itineraries without the mess.</small></div>
         <div className="strip-feature"><span><CircleDollarSign/></span><b>Money, sorted</b><small>Track shared costs and see who owes what.</small></div>
       </section>
-
-      <section className="destinations-section" id="destinations">
-        <div className="wrap">
-          <motion.div className="section-heading" initial={{ opacity:0, y:25 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}><div><span className="eyebrow">A LITTLE INSPIRATION</span><h2>Somewhere <em>out there.</em></h2></div><button className="text-link" onClick={() => onAuth('register')}>Find your next trip <ArrowUpRight size={16}/></button></motion.div>
-          <div className="destination-grid">
-            {destinations.map((d, i) => <motion.article className="destination-card" key={d.name} initial={{ opacity:0, y:55, rotate: i===1?2:0 }} whileInView={{ opacity:1, y:0, rotate:0 }} viewport={{ once:true, amount:.2 }} transition={{ delay:i*.14, duration:.8, ease:[.2,.8,.2,1] }}>
-              <img src={d.image} alt={d.name}/><div className="destination-gradient"/>
-              <span className="destination-tag">{d.tag}</span><button className="heart-btn" aria-label="Save destination"><Heart size={17}/></button>
-              <div className="destination-info"><div className="destination-meta"><span>★ {d.rating}</span><span>FROM {d.price}</span></div><h3>{d.name}</h3><p>{d.region}</p></div>
-            </motion.article>)}
-          </div>
-        </div>
-      </section>
-
+      <section className="destinations-section" id="destinations"><div className="wrap">
+        <motion.div className="section-heading" initial={{ opacity:0, y:25 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}><div><span className="eyebrow">A LITTLE INSPIRATION</span><h2>Somewhere <em>out there.</em></h2></div><button className="text-link" onClick={() => onAuth('register')}>Find your next trip <ArrowUpRight size={16}/></button></motion.div>
+        <div className="destination-grid">{destinations.map((d,i)=><motion.article className="destination-card" key={d.name} initial={{ opacity:0, y:70, rotate:i===1?2:0, scale:.94 }} whileInView={{ opacity:1, y:0, rotate:0, scale:1 }} viewport={{ once:true, amount:.25 }} transition={{ delay:i*.16, duration:1, ease:[.16,1,.3,1] }}><img src={d.image} alt={d.name}/><div className="destination-gradient"/><span className="destination-tag">{d.tag}</span><button className="heart-btn" aria-label="Save destination"><Heart size={17}/></button><div className="destination-info"><div className="destination-meta"><span>★ {d.rating}</span><span>FROM {d.price}</span></div><h3>{d.name}</h3><p>{d.region}</p></div></motion.article>)}</div>
+      </div></section>
       <section className="how-section wrap" id="how">
-        <motion.div className="how-image" initial={{ opacity:0, x:-45 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:.8 }}><img src="https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=1200&q=85" alt="Friends travelling together"/><span className="image-stamp">THE BEST<br/>PLANS ARE<br/><i>SHARED.</i></span></motion.div>
-        <motion.div className="how-copy" initial={{ opacity:0, x:45 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:.8 }}><span className="eyebrow">FROM “WE SHOULD GO” TO “WE DID”</span><h2>Less coordinating.<br/><em>More living.</em></h2><p>TripSync gives your group a home base for the whole adventure — so the planning feels like part of the fun, not a second job.</p>
-          <div className="steps"><div><span>01</span><b>Start with a place</b><small>Create a trip and set the dates, destination and vibe.</small></div><div><span>02</span><b>Bring everyone in</b><small>Invite your people and keep the whole crew in the loop.</small></div><div><span>03</span><b>Make it happen</b><small>Plan days, share costs, save documents and go.</small></div></div>
-          <button className="btn btn-dark" onClick={() => onAuth('register')}>Make your first trip <ArrowRight size={16}/></button>
-        </motion.div>
+        <motion.div className="how-image" initial={{ opacity:0, x:-70, rotate:-2 }} whileInView={{ opacity:1, x:0, rotate:0 }} viewport={{ once:true }} transition={{ duration:1 }}><img src="https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=1200&q=85" alt="Friends travelling together"/><span className="image-stamp">THE BEST<br/>PLANS ARE<br/><i>SHARED.</i></span></motion.div>
+        <motion.div className="how-copy" initial={{ opacity:0, x:70 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:1 }}><span className="eyebrow">FROM “WE SHOULD GO” TO “WE DID”</span><h2>Less coordinating.<br/><em>More living.</em></h2><p>TripSync gives your group a home base for the whole adventure — so the planning feels like part of the fun, not a second job.</p><div className="steps"><div><span>01</span><b>Start with a place</b><small>Create a trip and set the dates, destination and vibe.</small></div><div><span>02</span><b>Bring everyone in</b><small>Invite your people and keep the whole crew in the loop.</small></div><div><span>03</span><b>Make it happen</b><small>Plan days, share costs, save documents and go.</small></div></div><button className="btn btn-dark" onClick={() => onAuth('register')}>Make your first trip <ArrowRight size={16}/></button></motion.div>
       </section>
-
       <section className="closing-cta wrap"><div><span className="eyebrow">YOUR NEXT CHAPTER STARTS SOMEWHERE</span><h2>Good trips don't<br/>plan <em>themselves.</em></h2></div><button className="btn btn-mint btn-large" onClick={() => onAuth('register')}>Let's make a plan <ArrowUpRight size={17}/></button><div className="cta-orbit orbit-one"/><div className="cta-orbit orbit-two"/></section>
     </main>
     <footer className="site-footer wrap"><Brand light/><span>Made for the miles and memories.</span><span>© 2026 TripSync</span></footer>
